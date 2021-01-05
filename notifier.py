@@ -4,9 +4,9 @@ from typing import List
 
 from telethon import TelegramClient
 
-from config import api_id, api_hash, channels_file, session_name
+from config import config
 
-client = TelegramClient(session_name, api_id, api_hash)
+client = TelegramClient(config.session_name, config.api_id, config.api_hash)
 
 
 @dataclass
@@ -34,7 +34,7 @@ class SubscribedChannel:
         return [SubscribedChannel(**channel) for channel in channels]
 
 
-subscribed_channels = SubscribedChannel.read_from_json(channels_file)
+subscribed_channels = SubscribedChannel.read_from_json(config.channels_file)
 
 
 def keywords_in_message(keywords: List[str], text: str):
@@ -62,7 +62,7 @@ async def read_messages_from_channel(channel: SubscribedChannel, file_name: str)
 async def main():
     for channel in subscribed_channels:
         while True:
-            await read_messages_from_channel(channel, channels_file)
+            await read_messages_from_channel(channel, config.channels_file)
 
 
 with client:

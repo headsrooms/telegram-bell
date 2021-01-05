@@ -12,8 +12,8 @@ client = TelegramClient(config.session_name, config.api_id, config.api_hash)
 @dataclass
 class SubscribedChannel:
     name: str
-    last_id: int
     search_keywords: List[str]
+    last_id: int = 0
 
     def update(self, new_last_id: int, file_name: str):
         self.last_id = new_last_id
@@ -44,8 +44,9 @@ def keywords_in_message(keywords: List[str], text: str):
 
 
 async def read_messages_from_channel(channel: SubscribedChannel, file_name: str):
+    reverse = channel.last_id != 0
     async for message in client.iter_messages(
-        channel.name, min_id=channel.last_id, reverse=True
+        channel.name, min_id=channel.last_id, reverse=reverse
     ):
         if channel.search_keywords:
             if message.text and keywords_in_message(

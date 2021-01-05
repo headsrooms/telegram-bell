@@ -214,3 +214,4 @@ cython_debug/
 
 session_name.session
 poetry.lock
+.idea/

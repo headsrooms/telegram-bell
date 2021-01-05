@@ -213,3 +213,4 @@ dmypy.json
 cython_debug/
 
 session_name.session
+poetry.lock

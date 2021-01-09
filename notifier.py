@@ -61,8 +61,8 @@ async def read_messages_from_channel(channel: SubscribedChannel, file_name: str)
 
 
 async def main():
-    for channel in subscribed_channels:
-        while True:
+    while True:
+        for channel in subscribed_channels:
             await read_messages_from_channel(channel, config.channels_file)
 
 

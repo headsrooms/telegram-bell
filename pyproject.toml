@@ -3,6 +3,7 @@ name = "telegram-bell"
 version = "0.2.0"
 description = "Notify you when something is mentioned in a telegram channel"
 authors = ["Pablo Cabezas <headsrooms@gmail.com>"]
+readme = "README.md"
 license = "MIT"
 packages = [
     { include = "telegram_bell" }

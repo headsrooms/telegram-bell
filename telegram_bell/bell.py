@@ -13,8 +13,7 @@ from telegram_bell.config import Config
 from telegram_bell.exceptions import BadAPIConfiguration
 from telegram_bell.notifier import SubscribedChannel, read_messages_from_channel
 
-
-log = logging.getLogger("rich")
+logger = logging.getLogger("rich")
 
 app_path = Path("~/telegram_bell").expanduser()
 app_path.mkdir(exist_ok=True)
@@ -30,17 +29,19 @@ async def setup_telegram_session(config: Config):
         async with client:
             subscribed_channels = SubscribedChannel.read_from_json(channels_file_path)
             for channel in subscribed_channels:
-                await read_messages_from_channel(
-                    client, channel, channels_file_path
-                )
+                logger.info(f"Updating your subscribed channel '{channel}'")
+                await read_messages_from_channel(client, channel, channels_file_path)
     except struct.error:
         raise BadAPIConfiguration("Execute 'tbell config' with another parameters.")
 
 
 async def setup_config():
-    config = Config.create(config_path)
-    SubscribedChannel.create_config_file(channels_file_path)
-    await setup_telegram_session(config)
+    if Confirm.ask("Config already exist, do you want to create a new one?"):
+        config = Config.create(config_path)
+    if Confirm.ask("Config already exist, do you want to create a new one?"):
+        SubscribedChannel.create_config_file(channels_file_path)
+    if Confirm.ask("Config already exist, do you want to create a new one?"):
+        await setup_telegram_session(config)
 
 
 @click.group(chain=True)

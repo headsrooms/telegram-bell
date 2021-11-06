@@ -4,14 +4,14 @@ from json import load, dump
 from pathlib import Path
 from typing import List
 
-from rich import print
 from rich.prompt import Confirm, Prompt
 from telethon import TelegramClient
 from telethon.errors import FloodWaitError
+from telethon.tl.patched import Message
 
 from telegram_bell.exceptions import SpecifiedChannelDoesNotExist
 
-log = logging.getLogger("rich")
+logger = logging.getLogger("rich")
 
 
 @dataclass
@@ -71,7 +71,7 @@ async def read_messages_from_channel(
             channel.name, min_id=channel.last_id, reverse=reverse
         )
     except (ValueError, FloodWaitError) as e:
-        log.exception(e)
+        logger.exception(e)
         raise SpecifiedChannelDoesNotExist(
             "Specified channel doesn't exist. Check your config."
         )
@@ -79,15 +79,20 @@ async def read_messages_from_channel(
         await handle_messages(channel, channels_file_path, messages)
 
 
-async def handle_messages(channel, channels_file_path, messages):
+def must_handle_this_message(channel: SubscribedChannel, message: Message):
+    return not channel.search_keywords or (
+        channel.search_keywords
+        and message.text
+        and keywords_in_message(channel.search_keywords, message.text)
+    )
+
+
+async def handle_messages(
+    channel: SubscribedChannel, channels_file_path: str, messages, log: bool = False
+):
     for message in messages:
-        if channel.search_keywords:
-            if message.text and keywords_in_message(
-                channel.search_keywords, message.text
-            ):
-                print(message.sender_id, ":", message.text)
-                await message.forward_to("me")
-        else:
-            print(message.sender_id, ":", message.text)
+        if must_handle_this_message(channel, message):
+            if log:
+                logger.info(message.sender_id, ":", message.text)
             await message.forward_to("me")
         channel.update(message.id, channels_file_path)

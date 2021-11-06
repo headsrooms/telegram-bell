@@ -11,7 +11,9 @@ Notify you when something is mentioned in a telegram channel.
 
 ## Usage
 
-### As a command
+### CLI
+
+#### Run
 
 
     tbell run
@@ -25,7 +27,16 @@ Before you can use, it will ask you for:
 
 Then, the app will resend you the coinciding messages to your 'Saved Messages' channel in Telegram.
 
-### As a systemd user service
+#### Config
+
+    tbell config
+
+
+#### Show susbscribed channels
+
+    tbell show
+
+### Systemd user service
 
 Clone the repo and:
 
@@ -43,3 +54,8 @@ You can check the services logs too:
 
 
 If the service fails or the machine is restarted, the service will run transparently again.
+
+If you want to change your config in some moment:
+
+    tbell config
+    sh restart_service.sh

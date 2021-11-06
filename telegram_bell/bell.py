@@ -35,21 +35,29 @@ async def setup_telegram_session(config: Config):
         raise BadAPIConfiguration("Execute 'tbell config' with another parameters.")
 
 
-async def setup_config():
-    if Confirm.ask(
-        "Telegram API config already exist, do you want to create a new one?",
-        default=False,
-    ):
+async def setup_config(config_exists: bool):
+    if config_exists:
+        if Confirm.ask(
+            "Telegram API config already exist, do you want to create a new one?",
+            default=False,
+        ):
+            Config.create(config_path)
+        if Confirm.ask(
+            f"\nYour channels: \n"
+            f"{SubscribedChannel.show_from_json(channels_file_path)} \n"
+            f"Do you want to modify these channels?",
+            default=False,
+        ):
+            SubscribedChannel.update_existing_channels(channels_file_path)
+        if Confirm.ask(
+            "Telegram session already exist, do you want to create a new one?",
+            default=False,
+        ):
+            config = Config.from_path(config_path)
+            await setup_telegram_session(config)
+    else:
         Config.create(config_path)
-    if Confirm.ask(
-        "Subscribed channels config already exist, do you want to create a new one?",
-        default=False,
-    ):
         SubscribedChannel.create_config_file(channels_file_path)
-    if Confirm.ask(
-        "Telegram session already exist, do you want to create a new one?",
-        default=False,
-    ):
         config = Config.from_path(config_path)
         await setup_telegram_session(config)
 
@@ -82,17 +90,26 @@ async def run_command():
 
 @click.command(name="config")
 async def config_command():
-    if Path(config_path).exists() and not Confirm.ask(
-        "Config already exist, do you want to create a new one?", default=False
+    config_exists = Path(config_path).exists()
+    if config_exists and not Confirm.ask(
+        "Config already exist, do you want to modify?", default=False
     ):
         return
 
-    await setup_config()
+    await setup_config(config_exists)
+
+
+@click.command(name="show")
+async def show_command():
+    print("Your channels:")
+    channels = SubscribedChannel.show_from_json(channels_file_path)
+    print(channels)
 
 
 install()
 cli.add_command(run_command)
 cli.add_command(config_command)
+cli.add_command(show_command)
 
 if __name__ == "__main__":
     cli(_anyio_backend="asyncio")

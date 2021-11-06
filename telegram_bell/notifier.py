@@ -20,16 +20,47 @@ class SubscribedChannel:
     search_keywords: List[str]
     last_id: int = 0
 
-    def update(self, new_last_id: int, channels_file_path: str):
+    def update_last_id(self, new_last_id: int, channels_file_path: str):
         self.last_id = new_last_id
 
         with open(channels_file_path, "r+") as file:
             channels = load(file)
+            changed_channels = []
             for channel in channels:
                 if channel["name"] == self.name:
                     channel["last_id"] = self.last_id
+                changed_channels.append(channel)
             file.seek(0)
-            dump(channels, file)
+            dump(changed_channels, file)
+            file.truncate()
+
+    @staticmethod
+    def update_existing_channels(channels_file_path: str | Path):
+        with open(channels_file_path, "r+") as file:
+            channels = load(file)
+            changed_channels = []
+            for channel in channels:
+                if not Confirm.ask(
+                    f"Do you want to remove the channel '{channel['name']}'?",
+                    default=False,
+                ):
+                    if search_keywords := Prompt.ask(
+                        f"Do you want to change the search keywords of the channel '{channel['name']}'? \n"
+                        f"If so, enter the search keywords that will replace the old ones. If not, just press enter",
+                        default=False,
+                    ):
+                        channel["search_keywords"] = search_keywords.split()
+                    changed_channels.append(channel)
+
+            while Confirm.ask("Do you want to add a new channel?", default=False):
+                name = Prompt.ask("Enter the name of the Telegram channel")
+                search_keywords = Prompt.ask(
+                    f"Enter your search keywords for the channel '{name}'"
+                ).split()
+                changed_channels.append(asdict(SubscribedChannel(name, search_keywords)))
+
+            file.seek(0)
+            dump(changed_channels, file)
             file.truncate()
 
     @classmethod
@@ -39,6 +70,14 @@ class SubscribedChannel:
         with open(channels_file_path, "r") as file:
             channels = load(file)
         return [SubscribedChannel(**channel) for channel in channels]
+
+    @classmethod
+    def show_from_json(cls, channels_file_path: str | Path) -> str | None:
+        try:
+            channels = SubscribedChannel.read_from_json(channels_file_path)
+            return "\n".join([str(channel) for channel in channels])
+        except FileNotFoundError:
+            logger.error(f"Config doesn't exist. Execute 'tbell config' first, please")
 
     @classmethod
     def create_config_file(cls, channels_file_path: str | Path):
@@ -95,4 +134,4 @@ async def handle_messages(
             if log:
                 logger.info(message.sender_id, ":", message.text)
             await message.forward_to("me")
-        channel.update(message.id, channels_file_path)
+        channel.update_last_id(message.id, channels_file_path)

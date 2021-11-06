@@ -12,7 +12,7 @@ class Config:
     api_hash: str
 
     @classmethod
-    def create(cls, config_file_path: str | Path):
+    def create(cls, config_file_path: str | Path) -> Config:
         api_id = Prompt.ask("Enter your Telegram API id")
         api_hash = Prompt.ask("Enter your Telegram API hash")
 
@@ -22,3 +22,5 @@ class Config:
                 value = getattr(config, field)
                 config_file.write(f"{field}={value}")
                 config_file.write("\n")
+
+        return config

@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass, asdict
 from json import load, dump
+from pathlib import Path
 from typing import List
 
 from rich import print
@@ -32,13 +33,15 @@ class SubscribedChannel:
             file.truncate()
 
     @classmethod
-    def read_from_json(cls, channels_file_path: str) -> List["SubscribedChannel"]:
+    def read_from_json(
+        cls, channels_file_path: str | Path
+    ) -> List["SubscribedChannel"]:
         with open(channels_file_path, "r") as file:
             channels = load(file)
         return [SubscribedChannel(**channel) for channel in channels]
 
     @classmethod
-    def create_config_file(cls, channels_file_path: str):
+    def create_config_file(cls, channels_file_path: str | Path):
         channels = []
         while Confirm.ask("Do you want to add a channel?"):
             name = Prompt.ask("Enter the name of the Telegram channel")
@@ -59,7 +62,7 @@ def keywords_in_message(keywords: List[str], text: str):
 
 
 async def read_messages_from_channel(
-    client: TelegramClient, channel: SubscribedChannel, channels_file_path: str
+    client: TelegramClient, channel: SubscribedChannel, channels_file_path: str | Path
 ):
     reverse = channel.last_id != 0
 

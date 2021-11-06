@@ -6,7 +6,7 @@ Description=Telegram Bell Service
 [Service]
 
 # Command to execute when the service is started
-ExecStart=tbell run
+ExecStart=$HOME/.local/bin/tbell run
 
 # Disable Python's buffering of STDOUT and STDERR, so that output from the
 # service shows up immediately in systemd's logs

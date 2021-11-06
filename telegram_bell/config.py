@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from configclasses import configclass
 from rich.prompt import Prompt
 
@@ -10,7 +12,7 @@ class Config:
     api_hash: str
 
     @classmethod
-    def create(cls, config_file_path: str):
+    def create(cls, config_file_path: str | Path):
         api_id = Prompt.ask("Enter your Telegram API id")
         api_hash = Prompt.ask("Enter your Telegram API hash")
 

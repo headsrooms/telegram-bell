@@ -1,1 +1,1 @@
-cp ../telegram_bell.service ~/.config/systemd/user/telegram_bell.service
+mkdir -p ~/.config/systemd/user/ && cp ../telegram_bell.service ~/.config/systemd/user/

@@ -36,11 +36,11 @@ async def setup_telegram_session(config: Config):
 
 
 async def setup_config():
-    if Confirm.ask("Config already exist, do you want to create a new one?"):
+    if Confirm.ask("Telegram API config already exist, do you want to create a new one?", default=False):
         config = Config.create(config_path)
-    if Confirm.ask("Config already exist, do you want to create a new one?"):
+    if Confirm.ask("Subscribed channels config already exist, do you want to create a new one?", default=False):
         SubscribedChannel.create_config_file(channels_file_path)
-    if Confirm.ask("Config already exist, do you want to create a new one?"):
+    if Confirm.ask("Telegram session already exist, do you want to create a new one?", default=False):
         await setup_telegram_session(config)
 
 

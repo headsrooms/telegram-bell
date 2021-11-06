@@ -43,7 +43,7 @@ class SubscribedChannel:
     @classmethod
     def create_config_file(cls, channels_file_path: str | Path):
         channels = []
-        while Confirm.ask("Do you want to add a channel?"):
+        while Confirm.ask("Do you want to add a channel?", default=True):
             name = Prompt.ask("Enter the name of the Telegram channel")
             search_keywords = Prompt.ask(
                 f"Enter your search keywords for the channel '{name}'"

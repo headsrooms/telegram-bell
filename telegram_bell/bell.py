@@ -28,7 +28,11 @@ async def setup_telegram_session(config: Config):
 
     try:
         async with client:
-            pass
+            subscribed_channels = SubscribedChannel.read_from_json(channels_file_path)
+            for channel in subscribed_channels:
+                await read_messages_from_channel(
+                    client, channel, channels_file_path
+                )
     except struct.error:
         raise BadAPIConfiguration("Execute 'tbell config' with another parameters.")
 

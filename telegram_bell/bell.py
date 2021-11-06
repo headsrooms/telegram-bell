@@ -13,7 +13,6 @@ from telegram_bell.config import Config
 from telegram_bell.exceptions import BadAPIConfiguration
 from telegram_bell.notifier import SubscribedChannel, read_messages_from_channel
 
-SESSION_NAME = "session"
 
 log = logging.getLogger("rich")
 
@@ -21,10 +20,11 @@ app_path = Path("~/telegram_bell").expanduser()
 app_path.mkdir(exist_ok=True)
 config_path = app_path / ".env"
 channels_file_path = app_path / "subscribed_channels.json"
+telegram_session_path = app_path / "session"
 
 
 async def setup_telegram_session(config: Config):
-    client = TelegramClient(SESSION_NAME, config.api_id, config.api_hash)
+    client = TelegramClient(str(telegram_session_path), config.api_id, config.api_hash)
 
     try:
         async with client:
@@ -55,7 +55,7 @@ async def run_command():
     except ConfigFilePathDoesNotExist:
         config = Config.create(config_path)
         dump(config, config_path)
-    client = TelegramClient(SESSION_NAME, config.api_id, config.api_hash)
+    client = TelegramClient(str(telegram_session_path), config.api_id, config.api_hash)
 
     try:
         async with client:

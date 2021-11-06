@@ -1,5 +1,8 @@
 # telegram-bell
 
+
+![PyPI](https://img.shields.io/pypi/v/telegram-bell)
+
 Notify you when something is mentioned in a telegram channel.
 
 ## Install

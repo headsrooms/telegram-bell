@@ -23,20 +23,20 @@ config_path = app_path / ".env"
 channels_file_path = app_path / "subscribed_channels.json"
 
 
-def setup_telegram_session(config: Config):
+async def setup_telegram_session(config: Config):
     client = TelegramClient(SESSION_NAME, config.api_id, config.api_hash)
 
     try:
-        with client:
+        async with client:
             pass
     except struct.error:
         raise BadAPIConfiguration("Execute 'tbell config' with another parameters.")
 
 
-def setup_config():
+async def setup_config():
     config = Config.create(config_path)
     SubscribedChannel.create_config_file(channels_file_path)
-    setup_telegram_session(config)
+    await setup_telegram_session(config)
 
 
 @click.group(chain=True)
@@ -72,7 +72,7 @@ async def config_command():
     ):
         return
 
-    setup_config()
+    await setup_config()
 
 
 install()

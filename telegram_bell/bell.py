@@ -27,7 +27,7 @@ def setup_telegram_session(config: Config):
     client = TelegramClient(SESSION_NAME, config.api_id, config.api_hash)
 
     try:
-        async with client:
+        with client:
             pass
     except struct.error:
         raise BadAPIConfiguration("Execute 'tbell config' with another parameters.")

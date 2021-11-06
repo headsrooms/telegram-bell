@@ -6,7 +6,10 @@ Notify you when something is mentioned in a telegram channel.
 
     pip install telegram-bell
 
-# Usage
+## Usage
+
+### As a command
+
 
     tbell run
 
@@ -15,5 +18,25 @@ Before you can use, it will ask you for:
 - your Telegram API ID
 - your Telegram API hash
 - channels and keywords which you want to get notified
+- Telegram token (2FA)
 
 Then, the app will resend you the coinciding messages to your 'Saved Messages' channel in Telegram.
+
+### As a systemd user service
+
+Clone the repo and:
+
+    cd telegram-bell/scripts
+    sh install_service.sh
+    sh start_service.sh # it will ask you for config
+
+Check the service is running:
+
+    sh check_service.sh
+
+You can check the services logs too:
+
+    sh show_service_logs.sh
+
+
+If the service fails or the machine is restarted, the service will run transparently again.

@@ -1,0 +1,1 @@
+systemctl --user restart telegram_bell

@@ -20,7 +20,7 @@ log = logging.getLogger("rich")
 app_path = Path("~/telegram_bell").expanduser()
 app_path.mkdir(exist_ok=True)
 config_path = app_path / ".env"
-channels_file_path = app_path / ".subscribed_channels.json"
+channels_file_path = app_path / "subscribed_channels.json"
 
 
 def setup_config():

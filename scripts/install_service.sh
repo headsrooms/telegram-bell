@@ -1,0 +1,1 @@
+cp ../telegram_bell.service ~/.config/systemd/user/telegram_bell.service

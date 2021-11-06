@@ -1,0 +1,1 @@
+journalctl --user-unit telegram_bell

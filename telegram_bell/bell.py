@@ -58,7 +58,7 @@ async def setup_config(config_exists: bool):
         ):
             SubscribedChannel.update_existing_channels(channels_file_path)
         if Confirm.ask(
-            "Telegram session already exist, do you want to create a new one?",
+            "Telegram session already exist, do you want to create a new one? Type y if you want to update your subscribed channels.",
             default=False,
         ):
             config = Config.from_path(config_path)

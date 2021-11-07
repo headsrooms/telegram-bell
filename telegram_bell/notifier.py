@@ -56,7 +56,7 @@ class SubscribedChannel:
             while Confirm.ask("Do you want to add a new channel?", default=False):
                 name = Prompt.ask("Enter the name of the Telegram channel")
                 search_keywords = Prompt.ask(
-                    f"Enter your search keywords for the channel '{name}'"
+                    f"Enter your search keywords for the channel '{name}'. Press Enter if you wish to receive a notification for each message."
                 ).split()
                 changed_channels.append(
                     asdict(SubscribedChannel(name, search_keywords))
@@ -88,7 +88,7 @@ class SubscribedChannel:
         while Confirm.ask("Do you want to add a channel?", default=True):
             name = Prompt.ask("Enter the name of the Telegram channel")
             search_keywords = Prompt.ask(
-                f"Enter your search keywords for the channel '{name}'"
+                f"Enter your search keywords for the channel '{name}'. Press Enter if you wish to receive a notification for each message."
             ).split()
             channels.append(SubscribedChannel(name, search_keywords))
 

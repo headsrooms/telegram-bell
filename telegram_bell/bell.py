@@ -11,7 +11,11 @@ from telethon import TelegramClient
 
 from telegram_bell.config import Config
 from telegram_bell.exceptions import BadAPIConfiguration
-from telegram_bell.notifier import SubscribedChannel, read_messages_from_channel
+from telegram_bell.notifier import (
+    SubscribedChannel,
+    read_messages_from_channel,
+    discard_messages_from_channel_to_date,
+)
 
 logger = logging.getLogger("rich")
 
@@ -29,8 +33,12 @@ async def setup_telegram_session(config: Config):
         async with client:
             subscribed_channels = SubscribedChannel.read_from_json(channels_file_path)
             for channel in subscribed_channels:
-                logger.info(f"Updating your subscribed channel '{channel}'")
-                await read_messages_from_channel(client, channel, channels_file_path)
+                logger.info(
+                    f"Updating your subscribed channel '{channel}' and discarding messages up to today"
+                )
+                await discard_messages_from_channel_to_date(
+                    client, channel, channels_file_path
+                )
     except struct.error:
         raise BadAPIConfiguration("Execute 'tbell config' with another parameters.")
 

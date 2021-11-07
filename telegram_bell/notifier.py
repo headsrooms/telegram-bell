@@ -1,5 +1,6 @@
 import logging
 from dataclasses import dataclass, asdict
+from functools import partial
 from json import load, dump
 from pathlib import Path
 from typing import List
@@ -57,7 +58,9 @@ class SubscribedChannel:
                 search_keywords = Prompt.ask(
                     f"Enter your search keywords for the channel '{name}'"
                 ).split()
-                changed_channels.append(asdict(SubscribedChannel(name, search_keywords)))
+                changed_channels.append(
+                    asdict(SubscribedChannel(name, search_keywords))
+                )
 
             file.seek(0)
             dump(changed_channels, file)
@@ -101,7 +104,10 @@ def keywords_in_message(keywords: List[str], text: str):
 
 
 async def read_messages_from_channel(
-    client: TelegramClient, channel: SubscribedChannel, channels_file_path: str | Path
+    client: TelegramClient,
+    channel: SubscribedChannel,
+    channels_file_path: str | Path,
+    discard: bool = False,
 ):
     reverse = channel.last_id != 0
 
@@ -115,22 +121,37 @@ async def read_messages_from_channel(
             "Specified channel doesn't exist. Check your config."
         )
     else:
-        await handle_messages(channel, channels_file_path, messages)
+        await handle_messages(channel, channels_file_path, messages, discard)
 
 
-def must_handle_this_message(channel: SubscribedChannel, message: Message):
-    return not channel.search_keywords or (
-        channel.search_keywords
-        and message.text
-        and keywords_in_message(channel.search_keywords, message.text)
+discard_messages_from_channel_to_date = partial(
+    read_messages_from_channel, discard=True
+)
+
+
+def must_handle_this_message(
+    discard: bool, channel: SubscribedChannel, message: Message
+):
+    return (
+        not discard
+        and not channel.search_keywords
+        or (
+            channel.search_keywords
+            and message.text
+            and keywords_in_message(channel.search_keywords, message.text)
+        )
     )
 
 
 async def handle_messages(
-    channel: SubscribedChannel, channels_file_path: str, messages, log: bool = False
+    channel: SubscribedChannel,
+    channels_file_path: str,
+    messages,
+    log: bool = False,
+    discard: bool = False,
 ):
     for message in messages:
-        if must_handle_this_message(channel, message):
+        if must_handle_this_message(discard, channel, message):
             if log:
                 logger.info(message.sender_id, ":", message.text)
             await message.forward_to("me")

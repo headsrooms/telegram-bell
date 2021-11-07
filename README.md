@@ -1,6 +1,5 @@
 # telegram-bell
 
-
 ![PyPI](https://img.shields.io/pypi/v/telegram-bell)
 
 Notify you when something is mentioned in a telegram channel.
@@ -14,7 +13,6 @@ Notify you when something is mentioned in a telegram channel.
 ### CLI
 
 #### Run
-
 
     tbell run
 
@@ -30,7 +28,6 @@ Then, the app will resend you the coinciding messages to your 'Saved Messages' c
 #### Config
 
     tbell config
-
 
 #### Show susbscribed channels
 
@@ -51,7 +48,6 @@ Check the service is running:
 You can check the services logs too:
 
     sh show_service_logs.sh
-
 
 If the service fails or the machine is restarted, the service will run transparently again.
 

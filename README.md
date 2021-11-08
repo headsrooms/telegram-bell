@@ -23,11 +23,13 @@ Before you can use, it will ask you for:
 - channels and keywords which you want to get notified
 - Telegram token (2FA)
 
-Then, the app will resend you the coinciding messages to your 'Saved Messages' channel in Telegram.
+The app will then forward the matching messages to your "Saved Messages" channel in Telegram over time.
 
 #### Config
 
     tbell config
+
+You can reconfigure the application at any time with this command.
 
 #### Show susbscribed channels
 

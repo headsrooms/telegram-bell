@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from dataclasses import dataclass, asdict
 from functools import partial
@@ -115,11 +116,15 @@ async def read_messages_from_channel(
         messages = await client.get_messages(
             channel.name, min_id=channel.last_id, reverse=reverse
         )
-    except (ValueError, FloodWaitError) as e:
+    except ValueError as e:
         logger.exception(e)
         raise SpecifiedChannelDoesNotExist(
             "Specified channel doesn't exist. Check your config."
         )
+    except FloodWaitError as e:
+        logger.exception(e)
+        logger.info("Waiting for flood control")
+        await asyncio.sleep(e.seconds)
     else:
         await handle_messages(channel, channels_file_path, messages, discard)
 

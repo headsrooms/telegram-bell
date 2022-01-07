@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "telegram-bell"
-version = "0.7.0"
+version = "0.7.1"
 description = "Notify you when something is mentioned in a telegram channel"
 authors = ["Pablo Cabezas <headsrooms@gmail.com>"]
 readme = "README.md"
@@ -14,12 +14,12 @@ tbell = 'telegram_bell.bell:cli'
 
 [tool.poetry.dependencies]
 python = "^3.10"
-telethon = "^1.23"
+telethon = "^1.24"
 12factor-configclasses = "^1.0.0"
-rich = "^10.12.0"
-asyncclick = "^8.0.1"
-anyio = "^3.3.4"
-python-dotenv = "^0.19.1"
+rich = "^10.16.2"
+asyncclick = "^8.0.3.1"
+anyio = "^3.4.0"
+python-dotenv = "^0.19.2"
 
 [tool.poetry.dev-dependencies]
 

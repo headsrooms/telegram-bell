@@ -1,7 +1,8 @@
 [Unit]
 
 Description=Telegram Bell Service
-
+StartLimitBurst=2
+StartLimitIntervalSec=600
 
 [Service]
 

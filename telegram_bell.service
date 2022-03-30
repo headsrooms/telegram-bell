@@ -15,6 +15,7 @@ Environment=PYTHONUNBUFFERED=1
 
 # Automatically restart the service if it crashes
 Restart=on-failure
+RestartSec=1000s
 
 Type=simple
 
